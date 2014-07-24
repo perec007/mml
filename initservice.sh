@@ -22,7 +22,7 @@ initmysql)
         echo "В системе не установлен puppet, сейчас будет произведена установка!"
         apt-get update && apt-get install puppet && ./$0 initmysql
         fi
-
+;;
 *)
 cat << END 
 $0 {initweb}
