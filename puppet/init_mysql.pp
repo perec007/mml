@@ -1,43 +1,6 @@
-define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',$recursion='false') {
 
 
-
-        if ( $dir == '' ) {
-                $path = $title
-        } else {
-                $path = $dir
-        }
-
-        if ( $recursion == true ) {
-                $param = ' -R '
-        }
-
-        exec { "User $param $title":
-                command                 =>  "/bin/setfacl $param -m $type:$user:$perm $path",
-                logoutput               => true,
-                unless                  => "/bin/getfacl $path 2>&1 | /bin/grep ^$type:$user:$perm",
-                require => Package['acl'],
-        }
-
-        if ($setdefault == true) {
-        exec { "Default $title":
-                command                 =>  "/bin/setfacl $param  -m default:$type:$user:$perm $path",
-                logoutput               => true,
-                unless                  => "/bin/getfacl $path 2>&1 | /bin/grep ^$type:$user:$perm",
-                require => Package['acl'],
-                }
-        }
-
-
-    package { 'acl' :
-		ensure => installed
-	}
-	
-}
-
-
-
-$mysql = [ 'mysql-client-5.5', 'mysql-server-5.5', 'apg', ]
+$mysql = [ 'mysql-client', 'mysql-server', 'apg', ]
 	 
 	package { $mysql :
 		ensure => installed
@@ -45,30 +8,7 @@ $mysql = [ 'mysql-client-5.5', 'mysql-server-5.5', 'apg', ]
 	
  
 	
-	$storagemysql = [
-		'/storage/',
-		'/storage/mysql/',
-		'/storage/mysql/log',
-		'/storage/mysql/mysql',
-	]
 	
-	file { $storagemysql :
-		ensure => directory,
-	}
-	
-	
-	acl::setacl { '/storage/mysql/' :
-		type	=> "user",
-		user 	=> "mysql",
-		perm 	=> "rwx", 
-		setdefault => true,
-		recursion	=> true,
-		require 	=> [
-			File[$storagemysql],
-			Package[$mysql],
-						]
-	}
-
 
 #################################################
 # Запускаем базу Устанавливаем дефолтный пароль #
@@ -77,9 +17,8 @@ $mysql = [ 'mysql-client-5.5', 'mysql-server-5.5', 'apg', ]
 		ensure 	=> 	running, 
 		enable 	=> 	true, 
 		require =>	[ 
-			Acl::Setacl["/storage/mysql/"],
-			Exec['/bin/cp -p /home/os/mml/puppet/mysql/my.cnf /etc/mysql/my.cnf'],
-		],
+			Package[$mysql],
+			],
 	}
 	
 
@@ -98,12 +37,8 @@ $mysql = [ 'mysql-client-5.5', 'mysql-server-5.5', 'apg', ]
 
 ##################################################
 # Обязательно проверяем права  на файл с паролем #
-# И необходимость замены основного конфига		 #
 ##################################################		
 
- 	exec { '/bin/cp -p /home/os/mml/puppet/mysql/my.cnf /etc/mysql/my.cnf' :
-		unless	=> '/bin/grep -q PUPPET /etc/mysql/my.cnf',
-	}	
 	
 	file { '/root/.my.cnf' :
 		mode	=> 0400,
