@@ -1,0 +1,19 @@
+[FPMUSER]
+user = FPMUSER
+group = FPMUSER
+listen = /storage/socket/FPMUSER.sock 
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+access.log = /storage/www/DOMAIN/log/$pool.access.log
+slowlog = /storage/www/DOMAIN/log/$pool.log.slow
+security.limit_extensions = .php
+php_flag[display_errors] = on
+php_admin_value[error_log] = /storage/www/DOMAIN/log/$pool.error.log
+php_admin_flag[log_errors] = on
+php_admin_value[memory_limit] = 128M
+php_admin_value[upload_max_filesize] = 128M
+php_admin_value[date.timezone] = "Europe/Moscow"
+
