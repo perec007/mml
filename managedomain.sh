@@ -72,7 +72,7 @@ domain=$2
 
 useradd)
 user=$2
-	grep $user: /etc/passwd > /dev/null  && echo User $user is exisis! EXIT!!! && exit 
+		grep $user: /etc/passwd > /dev/null  && echo User $user is exisis! EXIT!!! && exit 
 
 		useradd -s /bin/bash -m $user
         echo "Use password to new username: passwd $user"
@@ -89,10 +89,10 @@ useraddperm)
         setfacl -R -m d:$user:rwx,u:$user:rwx   /storage/www/$domain/tmp /storage/www/$domain/www
         setfacl -R -m d:$user:rx,u:$user:rx   /storage/www/$domain/log	
 
-	mkdir -p /home/$user/domains/$domain/
-	ln -s  /storage/www/$domain/tmp /home/$user/domains/$domain/ 
-	ln -s  /storage/www/$domain/www /home/$user/domains/$domain/ 
-	ln -s  /storage/www/$domain/log /home/$user/domains/$domain/ 
+		mkdir -p /home/$user/domains/$domain/
+		ln -s  /storage/www/$domain/tmp /home/$user/domains/$domain/ 
+		ln -s  /storage/www/$domain/www /home/$user/domains/$domain/ 
+		ln -s  /storage/www/$domain/log /home/$user/domains/$domain/ 
 		
 ;;
  
@@ -102,9 +102,9 @@ userdelperm)
 		setfacl -x u:$user /storage/ /storage/www/
         setfacl -R -x u:$user   /storage/www/$domain/
         setfacl -R -x d:$user   /storage/www/$domain/
-	rm /home/$user/domains/$domain/www  
-	rm /home/$user/domains/$domain/log    
-	rm /home/$user/domains/$domain/tmp    
+		rm /home/$user/domains/$domain/www  
+		rm /home/$user/domains/$domain/log    
+		rm /home/$user/domains/$domain/tmp    
  
 ;;
 
@@ -113,6 +113,7 @@ user=$2
 	userdel -f $user
 	rm -rf /home/$user/
 ;;
+
 
 *)
 cat <<END

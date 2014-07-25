@@ -2,7 +2,11 @@
 
 action=$1
 
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 3cb415c4ffad8694b185dcfc40a96b521b674fdd
 
 case $action in
 
@@ -23,6 +27,7 @@ initmysql)
         apt-get update && apt-get install puppet && ./$0 initmysql
         fi
 ;;
+<<<<<<< HEAD
 initpostgresql)
 		if [ $(dpkg --status puppet  2>&1 |grep "Status: install ok installed" | wc -l) -eq "1" ];then
         puppet apply puppet/init_postgresql.pp
@@ -31,6 +36,8 @@ initpostgresql)
         apt-get update && apt-get install puppet && ./$0 postgresql
         fi
 ;;
+=======
+>>>>>>> 3cb415c4ffad8694b185dcfc40a96b521b674fdd
 *)
 cat << END 
 $0 {initweb}
