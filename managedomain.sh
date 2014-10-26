@@ -1,8 +1,16 @@
 #!/bin/bash
 
-action=$1
+#init config
+. mml.cfg
 
-          
+if [ "$mml_opt" = ""  ] |  [ "$mml_opt" = "/" ] 
+then
+	echo "Config error. Dir \"opt\" wrong!"
+fi
+
+exit
+
+action=$1
 
 case $action in
 showdom)
@@ -15,19 +23,19 @@ domain=$2
 
 		test -f /etc/nginx/sites-enabled/$domain".conf" && echo Domain $domain is exists!!! EXIT! && exit	
 
-				useradd -s /sbin/nologin -d /dev/null  fpm.$domain
+		useradd -s /sbin/nologin -d /dev/null  fpm.$domain
                 
-				mkdir /storage/www/$domain
-                mkdir /storage/www/$domain/www
-                mkdir /storage/www/$domain/log
-                mkdir /storage/www/$domain/tmp
+		mkdir $mml_opt/www/$domain
+                mkdir $mml_opt/www/$domain/www
+                mkdir $mml_opt/www/$domain/log
+                mkdir $mml_opt/www/$domain/tmp
 
-				setfacl -m u:fpm.$domain:rx /storage/ /storage/www/ /storage/www/$domain
-                setfacl -m u:fpm.$domain:rwx,d:fpm.$domain:rwx /storage/www/$domain/tmp /storage/www/$domain/www /storage/www/$domain/log
-                setfacl -m u:fpm.$domain:rwx,d:fpm.$domain:rwx /storage/socket/
+		setfacl -m u:fpm.$domain:rx $mml_opt/ $mml_opt/www/ $mml_opt/www/$domain
+                setfacl -m u:fpm.$domain:rwx,d:fpm.$domain:rwx $mml_opt/www/$domain/tmp $mml_opt/www/$domain/www $mml_opt/www/$domain/log
+                setfacl -m u:fpm.$domain:rwx,d:fpm.$domain:rwx $mml_opt/socket/
 				
-				setfacl -m u:NGINX:rwx,d:NGINX:rwx /storage/www/$domain/log/
-				setfacl -m u:NGINX:rx,d:NGINX:rx /storage/www/$domain/www/
+		setfacl -m u:NGINX:rwx,d:NGINX:rwx $mml_opt/www/$domain/log/
+		setfacl -m u:NGINX:rx,d:NGINX:rx $mml_opt/www/$domain/www/
 		
 				
                 cd /etc/nginx/sites-available/
@@ -40,13 +48,13 @@ domain=$2
                 cp TEMPLATE $domain.conf
                 sed -i  "s/DOMAIN/$domain/g" $domain.conf
                 sed -i  "s/FPMUSER/fpm.$domain/g" $domain.conf
-				echo "CREATE $domain <br> $(date)" >> /storage/www/$domain/www/index.php
+				echo "CREATE $domain <br> $(date)" >> $mml_opt/www/$domain/www/index.php
 
 
 				echo "Create:
 				Domain:		$domain
 				FPMUser:	fpm.$domain
-				Path to domain www: /storage/www/$domain/www
+				Path to domain www: $mml_opt/www/$domain/www
 				"
 		
         ;;
@@ -59,7 +67,7 @@ domain=$2
 
 deldom)
 domain=$2
-        rm -r /storage/www/$domain
+        rm -r $mml_opt/www/$domain
         rm /etc/nginx/sites-available/$domain.conf
         rm /etc/php5/fpm/pool.d/$domain.conf
 		rm /etc/nginx/sites-enabled/$domain.conf
@@ -84,24 +92,24 @@ useraddperm)
 		domain=$2
 		user=$3
 		
-		setfacl -m u:$user:x  /storage/ /storage/www/
-        setfacl -R -m u:$user:x   /storage/www/$domain/
-        setfacl -R -m d:$user:rwx,u:$user:rwx   /storage/www/$domain/tmp /storage/www/$domain/www
-        setfacl -R -m d:$user:rx,u:$user:rx   /storage/www/$domain/log	
+		setfacl -m u:$user:x  $mml_opt/ $mml_opt/www/
+        setfacl -R -m u:$user:x   $mml_opt/www/$domain/
+        setfacl -R -m d:$user:rwx,u:$user:rwx   $mml_opt/www/$domain/tmp $mml_opt/www/$domain/www
+        setfacl -R -m d:$user:rx,u:$user:rx   $mml_opt/www/$domain/log	
 
 		mkdir -p /home/$user/domains/$domain/
-		ln -s  /storage/www/$domain/tmp /home/$user/domains/$domain/ 
-		ln -s  /storage/www/$domain/www /home/$user/domains/$domain/ 
-		ln -s  /storage/www/$domain/log /home/$user/domains/$domain/ 
+		ln -s  $mml_opt/www/$domain/tmp /home/$user/domains/$domain/ 
+		ln -s  $mml_opt/www/$domain/www /home/$user/domains/$domain/ 
+		ln -s  $mml_opt/www/$domain/log /home/$user/domains/$domain/ 
 		
 ;;
  
 userdelperm)
 		domain=$2
 		user=$3
-		setfacl -x u:$user /storage/ /storage/www/
-        setfacl -R -x u:$user   /storage/www/$domain/
-        setfacl -R -x d:$user   /storage/www/$domain/
+		setfacl -x u:$user $mml_opt/ $mml_opt/www/
+        setfacl -R -x u:$user   $mml_opt/www/$domain/
+        setfacl -R -x d:$user   $mml_opt/www/$domain/
 		rm /home/$user/domains/$domain/www  
 		rm /home/$user/domains/$domain/log    
 		rm /home/$user/domains/$domain/tmp    
