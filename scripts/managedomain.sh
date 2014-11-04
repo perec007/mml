@@ -123,8 +123,20 @@ user=$2
 
 
 
+dialog)
+cat <<EOF
+adddom|Добавление домена|Добавление http домена, создание php-fpm пользователя, и типового конфига для nginx и отдельного пула php-fpm| --inputbox Domainname: 15 51 |x1 
+deldom|Удаление домена|Удаление http домена. Удаляются конфиги виртуального хоста, php-fpm user и конфиг, и вся структура каталога.| --inputbox Domainname: 15 51 |x1
+showdom|список доменных имен на сервере|Отобразить список доменных имен на сервере
+useradd|Добавление пользователя|Добавление пользователя в систему| --inputbox Username: 15 51  --inputbox Shell: 15 51  --passwordbox Password: 15 51 |-s x2 -p x3 x1
+userdel|Удаление пользователя|Удаление пользователя со всеми файлами|--inputbox Username: 15 51 |x1
+useraddperm|Права на домен|Дать пользователю возможность редактировать файлы и просматривать логи определенного домена. В его каталоге для удобства создается симлинк на рабочий каталог| --inputbox Domainname: 15 51 |x1
+userdelperm|Забрать права на домен|Забрать права редактирования и просмотра логов домена|--inputbox Domainname: 15 51 |x1
+reload|Рестарт nginx + php-fpm| service nginx reload && service php-fpm reload
+EOF
+;;
 
-*|help)
+*|help )
 cat <<END
 $0 {adddom|deldom|showdom} "httpdomain" 
 Этой командой производится добавление или удаление домена. 
@@ -146,6 +158,7 @@ service nginx reload && service php-fpm reload
 
 END
 ;;
+
 esac
 
 
