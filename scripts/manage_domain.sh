@@ -138,7 +138,7 @@ userdelperm)
 	setfacl -x u:$user $mml_opt/ $mml_opt/www/
 	setfacl -R -x u:$user   $mml_opt/www/$domain/
 	setfacl -R -x d:$user   $mml_opt/www/$domain/
-	rm /home/$user/domains/$domain/www  /home/$user/domains/$domain/log  /home/$user/domains/$domain/tmp    
+	rm -I -r /home/$user/domains/$domain/
 	echo "
 	Пользователь $user лишен привилегий на домен $domain
 	Символические ссылки также удалены.
