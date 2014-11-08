@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #init config
-. mml.cfg
+. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg 2> /dev/null  | cut -f 1)
+. $mml_work/scripts/_functions.sh
 
 if [ "$mml_opt" = ""  ] |  [ "$mml_opt" = "/" ] 
 then
@@ -12,12 +13,15 @@ action=$1
 
 case $action in
 showdom)
-echo enabled domains:
-ls -l /etc/nginx/sites-enabled/
+	check_input $# 2
+	echo enabled domains:
+	ls  /etc/nginx/sites-enabled/ | sed "s/.conf//g"
 ;;
 
 adddom)
-domain=$2
+	domain=$2
+	check_input $# 2
+
 
 	test -f /etc/nginx/sites-enabled/$domain".conf" && echo Domain $domain is exists!!! EXIT! && exit	
 
@@ -64,6 +68,7 @@ domain=$2
 
 
 deldom)
+	check_input $# 2
 	domain=$2
 
 	rm -r $mml_opt/www/$domain
@@ -78,6 +83,7 @@ deldom)
 ;;
 
 useradd)
+	check_input $# 2 # Обязателен только логин пользователя
 	user=$2
 	shell=$3 		; [ "$shell" == "" ] && unset shell
 	password=$4		; [ "$password" == "" ] && unset password
@@ -105,6 +111,8 @@ useradd)
 ;;
 
 useraddperm)
+	check_input $# 3
+	exit
 	domain=$2
 	user=$3
 	
@@ -121,6 +129,7 @@ useraddperm)
 ;;
  
 userdelperm)
+	check_input $# 3
 	domain=$2
 	user=$3
 	setfacl -x u:$user $mml_opt/ $mml_opt/www/
@@ -133,7 +142,8 @@ userdelperm)
 ;;
 
 userdel)
-user=$2
+	check_input $# 2
+	user=$2
 	userdel -f $user
 	rm -rf /home/$user/
 ;;
@@ -147,7 +157,7 @@ deldom|Удаление домена|Удаление http домена. Уда�
 showdom|список доменных имен на сервере|Отобразить список доменных имен на сервере
 useradd|Добавление пользователя|Добавление пользователя в систему| --inputbox Username: 15 51  --inputbox Shell: 15 51  --passwordbox Password: 15 51 | x1 x2 x3
 userdel|Удаление пользователя|Удаление пользователя со всеми файлами|--inputbox Username: 15 51 |x1
-useraddperm|Права на домен|Дать пользователю возможность редактировать файлы и просматривать логи определенного домена. В его каталоге для удобства создается симлинк на рабочий каталог| --inputbox Domainname: 15 51 |x1
+useraddperm|Права на домен|Дать пользователю возможность редактировать файлы и просматривать логи определенного домена. В его каталоге для удобства создается симлинк на рабочий каталог| --inputbox Domainname: 15 51 --inputbox Username: 15 51 |x1 x2
 userdelperm|Забрать права на домен|Забрать права редактирования и просмотра логов домена|--inputbox Domainname: 15 51 |x1
 reload|Рестарт nginx + php-fpm| service nginx reload && service php-fpm reload
 EOF

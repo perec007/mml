@@ -3,22 +3,19 @@
 # IMPORT CONFIG
 . mml.cfg
 
+# INPORT FUNCTIONS
+. scripts/_functions.sh 
+
 # PREPARE
-./scripts/testsystem.sh || exit 1
-./templates/gentemplates.sh
+. scripts/_testsystem.sh || exit 1
+. scripts/_gentemplates.sh
 
-
-stop(){
-	echo $?
-	cat $tempfile
-	exit
-}
 
 export DIALOG=${DIALOG=dialog}
 export tempfile=`mktemp 2>/dev/null` || tempfile=/tmp/test$$
 export all_userscript=$(find $mml_work/scripts/ -type f -perm 755)
 
-# trap "rm -f $tempfile" 0 1 2 5 15
+trap "rm -f $tempfile" 0 1 2 5 15
 
 #Выбор модуля
 echo  $all_userscript | tr ' ' \\n | \
