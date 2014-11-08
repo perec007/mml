@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #init config
-. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg 2> /dev/null  | cut -f 1)
+. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg ../mml.cfg 2> /dev/null  | cut -f 1)
 . $mml_work/scripts/_functions.sh
 
 if [ "$mml_opt" = ""  ] |  [ "$mml_opt" = "/" ] 
@@ -13,7 +13,7 @@ action=$1
 
 case $action in
 showdom)
-	check_input $# 2
+	check_input $# 1
 	echo enabled domains:
 	ls  /etc/nginx/sites-enabled/ | sed "s/.conf//g"
 ;;
@@ -99,7 +99,7 @@ useradd)
 		exit 1 
 	fi
 	
- 	useradd  -s $shell -p $( echo $password | openssl passwd -1 -stdin ) $user
+ 	useradd  -m -s $shell -p $( echo $password | openssl passwd -1 -stdin ) $user
 	
 	echo "
 	Host: $(hostname)
@@ -112,7 +112,6 @@ useradd)
 
 useraddperm)
 	check_input $# 3
-	exit
 	domain=$2
 	user=$3
 	
@@ -125,7 +124,11 @@ useraddperm)
 	ln -s  $mml_opt/www/$domain/tmp /home/$user/domains/$domain/ 
 	ln -s  $mml_opt/www/$domain/www /home/$user/domains/$domain/ 
 	ln -s  $mml_opt/www/$domain/log /home/$user/domains/$domain/ 
-		
+	
+	echo "
+	Пользователю $user предоставлены права на домен $domain  
+	Для удобства создана ссылка в домашнем каталоге.
+	"
 ;;
  
 userdelperm)
@@ -135,10 +138,11 @@ userdelperm)
 	setfacl -x u:$user $mml_opt/ $mml_opt/www/
 	setfacl -R -x u:$user   $mml_opt/www/$domain/
 	setfacl -R -x d:$user   $mml_opt/www/$domain/
-	rm /home/$user/domains/$domain/www  
-	rm /home/$user/domains/$domain/log    
-	rm /home/$user/domains/$domain/tmp    
- 
+	rm /home/$user/domains/$domain/www  /home/$user/domains/$domain/log  /home/$user/domains/$domain/tmp    
+	echo "
+	Пользователь $user лишен привилегий на домен $domain
+	Символические ссылки также удалены.
+	"
 ;;
 
 userdel)
@@ -148,8 +152,10 @@ userdel)
 	rm -rf /home/$user/
 ;;
 
-
-
+reload)
+service reload nginx
+service reload php-fpm 
+;;
 dialog)
 cat <<EOF
 adddom|Добавление домена|Добавление http домена, создание php-fpm пользователя, и типового конфига для nginx и отдельного пула php-fpm| --inputbox Domainname: 15 51 |x1 
@@ -158,7 +164,7 @@ showdom|список доменных имен на сервере|Отобра�
 useradd|Добавление пользователя|Добавление пользователя в систему| --inputbox Username: 15 51  --inputbox Shell: 15 51  --passwordbox Password: 15 51 | x1 x2 x3
 userdel|Удаление пользователя|Удаление пользователя со всеми файлами|--inputbox Username: 15 51 |x1
 useraddperm|Права на домен|Дать пользователю возможность редактировать файлы и просматривать логи определенного домена. В его каталоге для удобства создается симлинк на рабочий каталог| --inputbox Domainname: 15 51 --inputbox Username: 15 51 |x1 x2
-userdelperm|Забрать права на домен|Забрать права редактирования и просмотра логов домена|--inputbox Domainname: 15 51 |x1
+userdelperm|Забрать права на домен|Забрать права редактирования и просмотра логов домена|--inputbox Domainname: 15 51 --inputbox Username: 15 51 |x1 x2
 reload|Рестарт nginx + php-fpm| service nginx reload && service php-fpm reload
 EOF
 ;;
@@ -180,7 +186,7 @@ $0 {userdelperm|useraddperm}   "httpdomain" "user"
 
 
 !!!Внимание!!!
-Ни одна из этих команд самостоятельно не рестартует сервисы. Чтобы перезапустить nginx и php-fpm необходимо использовать команду:
+Ни одна из этих команд самостоятельно не рестартует сервисы. Чтобы перезапустить дополнительно использовать команду reload либо сделать это руками:
 service nginx reload && service php-fpm reload
 
 END

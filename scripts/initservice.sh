@@ -1,35 +1,26 @@
 #!/bin/bash
 
+
+#init config
+. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg ../mml.cfg 2> /dev/null  | cut -f 1)
+. $mml_work/scripts/_functions.sh
+
+
 action=$1
 
 
 case $action in
-
 initweb)
-        if [ $(dpkg --status puppet  2>&1 |grep "Status: install ok installed" | wc -l) -eq "1" ];then
-        puppet apply puppet/init_webdirnginx.pp
-        else
-        echo "В системе не установлен puppet, сейчас будет произведена установка!"
-        apt-get update && apt-get install puppet && ./$0 initweb
-        fi
-;;
+        puppet apply --verbose puppet/init_webdirnginx.pp
+       ;;
 
 initmysql)
-		if [ $(dpkg --status puppet  2>&1 |grep "Status: install ok installed" | wc -l) -eq "1" ];then
-        puppet apply puppet/init_mysql.pp
-        else
-        echo "В системе не установлен puppet, сейчас будет произведена установка!"
-        apt-get update && apt-get install puppet && ./$0 initmysql
-        fi
+		puppet apply puppet/init_mysql.pp
+        
 ;;
 
 initpostgresql)
-		if [ $(dpkg --status puppet  2>&1 |grep "Status: install ok installed" | wc -l) -eq "1" ];then
         puppet apply puppet/init_postgresql.pp
-        else
-        echo "В системе не установлен puppet, сейчас будет произведена установка!"
-        apt-get update && apt-get install puppet && ./$0 postgresql
-        fi
 ;;
 
 dialog)

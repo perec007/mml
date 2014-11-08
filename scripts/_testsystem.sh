@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#init config
+. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg ../mml.cfg 2> /dev/null  | cut -f 1)
+. $mml_work/scripts/_functions.sh
+
+
 check_debian() {
 	soft="acl dialog puppet"
 	for check in `echo $soft`

@@ -173,4 +173,97 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	
  
 
+ 
+###########
+# PHP-FPM #
+###########
+
+
+$phpmodules = [
+        "apachetop",
+        "apache2-utils",
+        "php-pear",
+        "php5",
+        "php5-cli",
+        "php5-common",
+        "php5-curl",
+        "php5-dev",
+        "php5-fpm",
+        "php5-gd",
+        "php5-imagick",
+        "php5-mcrypt",
+        "php5-memcache",
+        "php5-mysql",
+        "php5-xsl",
+        "php5-geoip",
+        "memcached",
+        "libssh2-1-dev",
+        "libmemcached-dev",
+        "pkg-config",
+        "libmemcached10",
+        ]
+
+
+        package { $phpmodules :
+                ensure => installed,
+        }
+
+
+
+
+
+    service { 'php5-fpm' :
+                ensure => running,
+                enable => true,
+                require => Package[$phpmodules],
+        }
+
+        service { 'memcached' :
+                ensure => running,
+                enable => true,
+                require => Package[$phpmodules],
+        }
+
+        $deinstall = [
+        "apache2-mpm-prefork",
+        "apache2.2-bin",
+        "apache2.2-common",
+        "libapache2-mod-php5filter",
+        ]
+
+        package { $deinstall :
+                ensure => purged,
+        }
+
+        exec { '/bin/rm /etc/php5/fpm/pool.d/www.conf' :
+                onlyif  =>      '/usr/bin/test -f /etc/php5/fpm/pool.d/www.conf',
+        }
+
+        file { '/etc/php5/fpm/pool.d/TEMPLATE' :
+				source  => '/__MML_WORK__/puppet/fpmpool/TEMPLATE',
+                mode    => '0644',
+                require => [
+                        Package[$phpmodules],
+                        Service['php5-fpm'],
+                        ]
+                }
+
+                file { '/etc/php5/fpm/php.ini' :
+                source  => '/__MML_WORK__/puppet/fpmpool/php.ini.fpm',
+                mode    => '0644',
+                notify  =>      Service['php5-fpm'],
+                require => [
+                        Package[$phpmodules],
+                        ]
+                }
+
+                file { '/etc/php5/cli/php.ini' :
+                source  => '/__MML_WORK__/puppet/fpmpool/php.ini.cli',
+                mode    => '0644',
+                notify  =>      Service['php5-fpm'],
+                require => [
+                        Package[$phpmodules],
+                        ]
+                }
+
 

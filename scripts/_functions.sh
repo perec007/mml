@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#init config
+. $(ls /etc/mml/mml.cfg ~/mml/mml.cfg /opt/mml.cfg ../mml.cfg 2> /dev/null  | cut -f 1)
 
 
 debug(){
