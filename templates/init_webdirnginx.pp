@@ -49,7 +49,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 
 	
 	$wwwdirs = [
-	'/__MML_OPT__',
+	'/__MML_OPT__/',
 	'/__MML_OPT__/socket',
 	'/__MML_OPT__/www',
 	]
@@ -80,7 +80,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	
  	file { 'Content default web site' :
 		path	=> 	'/__MML_OPT__/www/default/www',
-		source  => 	'__MML_WORK__puppet/nginx/index',
+		source  => 	'/__MML_WORK__/puppet/nginx/index',
 		ensure 	=> 	directory,
 		recurse 	=>	'true',
 		owner		=> NGINX,
@@ -106,7 +106,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 # ###################################
 # # Раздаем необходимые права через ACL#
 # ###################################
-	acl::setacl { '/__MML_OPT__' :
+	acl::setacl { '/__MML_OPT__/' :
 		type	=> "user",
 		user 	=> "NGINX",
 		perm 	=> "--x", 
@@ -153,25 +153,19 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 			]	
 		}
 
-	# ############################################
-	# # Включаем необходимые конифигурационные файлы#
-	# ############################################
+	############################################
+	# Включаем необходимые конифигурационные файлы#
+	############################################
 	file { '/etc/nginx/nginx.conf' :
-		source  => '__MML_WORK__puppet/nginx/nginx.conf',
+		source  => '/__MML_WORK__/puppet/nginx/nginx.conf',
 		replace =>      true,
 		notify  =>      Service["nginx"],
 		owner => NGINX,
     }
-	
-	file { '/etc/nginx/geoip.dat' :
-		source  => '__MML_WORK__puppet/nginx/geoip.dat',
-		replace =>      true,
-		notify  =>      Service["nginx"],
-		owner => NGINX,
-    }	
+
 	
 	file { '/etc/nginx/sites-available/template' :
-		source  => '__MML_WORK__puppet/nginx/template',
+		source  => '/__MML_WORK__/puppet/nginx/template',
 		replace =>      true,
 		notify  =>      Service["nginx"],
 		owner 	=> NGINX,

@@ -79,8 +79,13 @@ deldom)
 
 useradd)
 	user=$2
-	shell=$3
-	password=$4
+	shell=$3 		; [ "$shell" == "" ] && unset shell
+	password=$4		; [ "$password" == "" ] && unset password
+	
+	shell=${shell=/bin/bash}
+	password=${password=$(apg -n 1)}
+	
+	
 	
 	if [ "$(grep $user: /etc/passwd |wc -l)" -ne "0" ]
 	then	
@@ -88,7 +93,7 @@ useradd)
 		exit 1 
 	fi
 	
- 	useradd  -s $shell -p $(echo $password | openssl passwd -1 -stdin) $user
+ 	useradd  -s $shell -p $( echo $password | openssl passwd -1 -stdin ) $user
 	
 	echo "
 	Host: $(hostname)
