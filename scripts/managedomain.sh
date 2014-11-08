@@ -81,9 +81,22 @@ useradd)
 	user=$2
 	shell=$3
 	password=$4
-	grep $user: /etc/passwd > /dev/null  && echo User $user is exisis! EXIT!!! && exit 1
- 	useradd -u $user -s $shell -p $(echo $password | openssl passwd -1 -stdin)
 	
+	if [ "$(grep $user: /etc/passwd |wc -l)" -ne "0" ]
+	then	
+		echo Useradd $user error!!! 
+		exit 1 
+	fi
+	
+ 	useradd  -s $shell -p $(echo $password | openssl passwd -1 -stdin) $user
+	
+	echo "
+	Host: $(hostname)
+	User: $user
+	Password: $password
+	"
+	
+	exit 0
 ;;
 
 useraddperm)

@@ -73,12 +73,15 @@ then
 	x4=$(cat $tempfile | awk -F '|' '{ print $4 }' )
 	x5=$(cat $tempfile | awk -F '|' '{ print $5 }' )
 	
-	post_param=$($id_script dialog |grep $pre_param | awk  -F '|' '{ print $5 }' | sed "s/x1/$x1/g; s/x2/$x2/g; s/x3/$x3/g; s/x4/$x4/g; s/x5/$x5/g")
+	post_param=$( $id_script dialog |grep $pre_param\| | awk  -F '|' '{ print $5 }' | sed "s,x1,$x1,g; s,x2,$x2,g; s,x3,$x3,g; s,x4,$x4,g; s,x5,$x5,g" )
+
 fi
 
 
-
 command=$(echo $id_script $pre_param $post_param)
+
+echo $command
+
 echo $DIALOG --clear --title \"Подтвердите запуск команды:\" --yesno \"$command\" 30 61  " 2> $tempfile "  | \
 	tr \\n ' '  | bash
 
