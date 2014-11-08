@@ -1333,9 +1333,9 @@ session.save_handler = files
 ; NOTE 1: PHP will not create this directory structure automatically.
 ;         You can use the script in the ext/session dir for that purpose.
 ; NOTE 2: See the section on garbage collection below if you choose to
-;         use subdirectories for session storage
+;         use subdirectories for session __MML_OPT__
 ;
-; The file storage module creates files using mode 600 by default.
+; The file __MML_OPT__ module creates files using mode 600 by default.
 ; You can change that by using
 ;
 ;     session.save_path = "N;MODE;/path"
@@ -1796,7 +1796,7 @@ ldap.max_links = -1
 ; Determines if Zend OPCache is enabled for the CLI version of PHP
 ;opcache.enable_cli=0
 
-; The OPcache shared memory storage size.
+; The OPcache shared memory __MML_OPT__ size.
 ;opcache.memory_consumption=64
 
 ; The amount of memory for interned strings in Mbytes.
@@ -1820,7 +1820,7 @@ ldap.max_links = -1
 ;opcache.validate_timestamps=1
 
 ; How often (in seconds) to check file timestamps for changes to the shared
-; memory storage allocation. ("1" means validate once per second, but only
+; memory __MML_OPT__ allocation. ("1" means validate once per second, but only
 ; once per request. "0" means always validate)
 ;opcache.revalidate_freq=2
 

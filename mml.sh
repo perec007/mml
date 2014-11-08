@@ -1,6 +1,8 @@
 #!/bin/bash
 
 . mml.cfg
+./templates/gentemplates.sh
+
 
 export DIALOG=${DIALOG=dialog}
 export tempfile=`mktemp 2>/dev/null` || tempfile=/tmp/test$$

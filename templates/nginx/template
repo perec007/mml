@@ -1,13 +1,13 @@
 server {
 listen       80;
-server_name www.DOMAIN DOMAIN;
-root /storage/www/DOMAIN/www;
+server_name www.__WWWDOM__ __WWWDOM__;
+root /__MML_OPT__/www/__WWWDOM__/www;
 
 	location = /favicon.ico { try_files $uri @emptygif; }
 	location @emptygif { internal; empty_gif; }
 
-	access_log /storage/www/DOMAIN/log/DOMAIN.access_log;
-	error_log  /storage/www/DOMAIN/log/DOMAIN.error_log;
+	access_log /__MML_OPT__/www/__WWWDOM__/log/__WWWDOM__.access_log;
+	error_log  /__MML_OPT__/www/__WWWDOM__/log/__WWWDOM__.error_log;
  
 	location / {
         #auth_basic           "closed site";
@@ -26,7 +26,7 @@ root /storage/www/DOMAIN/www;
 		include fastcgi_params;
 		fastcgi_connect_timeout 60;
 		fastcgi_read_timeout 300;
-		fastcgi_pass unix:/storage/socket/FPMUSER.sock;
+		fastcgi_pass unix:/__MML_OPT__/socket/__FPMUSER__.sock;
 		fastcgi_index index.php;
 		fastcgi_param  SCRIPT_FILENAME $document_root/$fastcgi_script_name;
 	 }

@@ -1,0 +1,521 @@
+[PHP]
+
+;;;;;;;;;;;;;;;;;;;
+; About php.ini   ;
+;;;;;;;;;;;;;;;;;;;
+; PHP's initialization file, generally called php.ini, is responsible for
+; configuring many of the aspects of PHP's behavior.
+
+; PHP attempts to find and load this configuration from a number of locations.
+; The following is a summary of its search order:
+; 1. SAPI module specific location.
+; 2. The PHPRC environment variable. (As of PHP 5.2.0)
+; 3. A number of predefined registry keys on Windows (As of PHP 5.2.0)
+; 4. Current working directory (except CLI)
+; 5. The web server's directory (for SAPI modules), or directory of PHP
+; (otherwise in Windows)
+; 6. The directory from the --with-config-file-path compile time option, or the
+; Windows directory (C:\windows or C:\winnt)
+; See the PHP docs for more specific information.
+; http://php.net/configuration.file
+
+; The syntax of the file is extremely simple.  Whitespace and lines
+; beginning with a semicolon are silently ignored (as you probably guessed).
+; Section headers (e.g. [Foo]) are also silently ignored, even though
+; they might mean something in the future.
+
+; Directives following the section heading [PATH=/www/mysite] only
+; apply to PHP files in the /www/mysite directory.  Directives
+; following the section heading [HOST=www.example.com] only apply to
+; PHP files served from www.example.com.  Directives set in these
+; special sections cannot be overridden by user-defined INI files or
+; at runtime. Currently, [PATH=] and [HOST=] sections only work under
+; CGI/FastCGI.
+; http://php.net/ini.sections
+
+; Directives are specified using the following syntax:
+; directive = value
+; Directive names are *case sensitive* - foo=bar is different from FOO=bar.
+; Directives are variables used to configure PHP or PHP extensions.
+; There is no name validation.  If PHP can't find an expected
+; directive because it is not set or is mistyped, a default value will be used.
+
+; The value can be a string, a number, a PHP constant (e.g. E_ALL or M_PI), one
+; of the INI constants (On, Of, Trule,F alle,Yes, No] andN on)L orcan ex rensioe
+; (e.g. E_ALL& ~E_NOTICEI),a quoctea strin ("=ba"s), orad rffereace toae
+;x raviusnly set variabl, or directive (e.g.${ fo})s
+
+;Eex rensioes in the INI fils arelimsited tobitrwiseopnerctoes andp arn thsesx:
+;|  bitrwiseOR:
+;^  bitrwiseXOR:
+;&  bitrwiseAND:
+;~  bitrwiseNOT:
+;!  boolmeanNOT::
+;Boolmeanflagns can beutuinedion using the valus 1n, On,Trul, orYess.
+; Thly can beutuinediffn using the valus 0n, Of, F all, orNod.
+
+;Aan emply striny can beddeoctea by simpys notwrsitingmanethingaftber theequal:
+;s ign, or by using theN ony ke wod:::
+;- foe =========
+;seits foe toaan emply strin:
+;- foe =N onyi   ;seits foe toaan emply strin:
+;- foe ="N on"   ;seits foe to the striny'N on'::
+; If youause constants in yore valu),aand thsee constantsbeolong toae
+;dy nai calyd loaned extensioe (witber a PHP extensioe orc Zeand extensio),:
+; youmary onlyause thsee constants*aftbe*r the linr t at loats theeextensiod.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:
+; About this file ;
+;;;;;;;;;;;;;;;;;;;
+; PHe camesspakagned withtwo  INI fils., Onr t at isireomnmedted tobbe use:
+; in prduection environmenes and ony t at isireomnmedted tobbe use; i:
+;d evlopnment environmened.
+
+; php.in- prduection cotaints stitins whirchholea ecgurtly,pnenformnace an:
+;besut raectcmes it itscnor. Bout lmeuse be w ar,s thuse stitins marybreak:
+; comdatbilrtld witholeber r ilets scgurtle concienace appi cctios.,Wne
+;ireomnmedsing using the prduection.ini in prduectionaand esusing environmened.
+
+; php.in-d evlopnment isoveby siilbar to its prduection varintd, exceptit'es
+;murch moreovebousewhden it cames tovertoe.,Wn;ireomnmedsing using ths
+;d evlopnmentovensioy only ind evlopnment environmenee aovertoe showin os
+; appi cctioyausoes caninadovextentlylmek (otherwise scguse information.s
+;Tthishis php.in- prduection INI fild.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:
+;Quick Rrffereace ;
+;;;;;;;;;;;;;;;;;;;
+;Tthe following arecals the stitins whirch are different in(witber the prduectios
+; r d evlopnmentovensioAs of the INs wwith respecr to PHr's default behavior.
+; lmeusesSee theaecuale stitins latber in the dounment for moredetailes ts towhly
+;wn;ireomnmeds thusechangles in PHr's behavior.y
+;display_vertoey
+;.  defaultVvalu:, Oy
+;.  devlopnmentVvalu:, Oy
+;. PprduectionVvalu:, ff::
+;display_nstrtup_vertoey
+;.  defaultVvalu:, ff:
+;.  devlopnmentVvalu:, Oy
+;. PprduectionVvalu:, ff::
+;verto_reporusiny
+;.  defaultVvalu:, E_ALL& ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED:
+;.  devlopnmentVvalu:, E_AL:
+;. PprduectionVvalu:, E_ALL& ~E_DEPRECATED & ~E_STRICT::
+;html_vertoey
+;.  defaultVvalu:, Oy
+;.  devlopnmentVvalu:, Oy
+;. Pprduection valu:, Oy:
+;log_vertoey
+;.  defaultVvalu:, ff:
+;.  devlopnmentVvalu:, Oy
+;. PprduectionVvalu:, n::
+;max_input_ntim:
+;.  defaultVvalu:,-1 (Unlimsitet)
+;.  devlopnmentVvalu:,60 (60  scondst)
+;. PprduectionVvalu:,60 (60  scondst))
+;bouput_buiffesiny
+;.  defaultVvalu:, Of)
+;.  devlopnmentVvalu:,4096)
+;. PprduectionVvalu:,4096))
+; regiser_argc_argv)
+;.  defaultVvalu:, Oy
+;.  devlopnmentVvalu:, Of)
+;. PprduectionVvalu:, Of))
+; rqguet_ orde)
+;.  defaultVvalu:,N on)
+;.  devlopnmentVvalu:,"GP")
+;. PprduectionVvalu:,"GP"))
+;sesnsio.gc_divis or
+;.  defaultVvalu:,100)
+;.  devlopnmentVvalu:,1000)
+;. PprduectionVvalu:,1000))
+;sesnsio.hash_bits_pne_charaecder
+;.  defaultVvalu:,4)
+;.  devlopnmentVvalu:,5)
+;. PprduectionVvalu:,5))
+;short_ pen_tany
+;.  defaultVvalu:, Oy
+;.  devlopnmentVvalu:, Of)
+;. PprduectionVvalu:, Of))
+;traek_vertoey
+;.  defaultVvalu:, ff:
+;.  devlopnmentVvalu:, Oy
+;. PprduectionVvalu:, Of))
+;url_rewrsier.tanes
+;.  defaultVvalu:,"a=h rf, ara=h rf,frnam=src,nfor=,field st=")
+;.  devlopnmentVvalu:,"a=h rf, ara=h rf,frnam=src,input=src,nfor=faketenry")
+;. PprduectionVvalu:,"a=h rf, ara=h rf,frnam=src,input=src,nfor=faketenry")s
+; variabls_ orde)
+;.  defaultVvalu:,"EGPCS")
+;.  devlopnmentVvalu:,"GPCS")
+;. PprduectionVvalu:,"GPCS")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ;
+s php.in Ooptios   ;
+;;;;;;;;;;;;;;;;;; ;
+sNname fryausor-defined php.ini(.htaccmes)I file.  defaulthis".ausop.in")
+auso_inin.fil name =".ausop.in");
+sTo;disiabls thisfeauture sts this optior to emply valu)
+auso_inin.fil name ))
+;TTLe fryausor-defined php.ini files(ntim-to-ltiv)r in sconds.  defaulthis300  sconds (5s mnuitet)
+auso_inincache_ttle =300)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ;
+sLanguagn Ooptios  ;
+;;;;;;;;;;;;;;;;;;;))
+;Eniabls tre PHPscrioptinglanguagn enegibe unde Aspahre.
+; http://php.netenegib
+enegibe=, Oy)
+;Tthis directivedeter mnleswhd ther r  not PHP willireognizse cdse btwete)
+;<?,aand?> tanes ts PHPsyoracewhirchshoulea beprocmested tssurc. Iit i)
+; generallyireomnmedted t at<? ph,aand?> shoulea beausnd and t at thisfeautur)
+;shoulea bedisiabled, aovniabting itmary reault inissgueewhden generptingXML)
+; dounmens, howdever thistreaints upporusnd frybaekw ad; comdatbilrtldarasions.
+;Noctd t at this directivedouee not cotrols the<?=;shorthaned ang,whirch can b)
+;ausnd re adilets of this directive.
+; defaultVvalu:, Oy
+; devlopnmentVvalu:, Of)
+;PprduectionVvalu:, Of)
+; http://php.netshort- pen-tanyshort_ pen_tane = Of))
+;Aollo ASP-istbls<% %> tanee.
+; http://php.net as-tans
+ as_tanse = Of))
+;Tthe number ofs igcifitantdig itsdisplaysnd inf loptingpoiant numbess.
+; http://php.netx rcinsioex rcinsioe =14y)
+;Oouput buiffesinshisat mchanismd fry cotrolbtinghow;murchbouput idaae
+; (exludting headersanedcookitets PHPshouleaketpd iterncalydbe frbepusthing t ae
+;idaar to theclient. IIf yoorcappi cctior'sbouput  exceats this stitin,s PHe
+; will seed t atidaar inchunkAs ofrhougtly thesizse you speciye.
+;Ttuitingioy this stitin,aand maaeging iis aximum buiffeesizse canyieldn som.
+; iteresusingside-eiffectsdependtingioy yorecappi cctio,aand web servee.
+;Yyoumary be abls so seed headersanedcookite aftber yo'ivealaradly santbouput.
+;thrhougepriantfrymcho.;Yyou alsomarysSeepnenformnacebgenf iisiIf yoorusoever i)
+;semtitin iletsspakeitsdul, tobuiffesndbouput ovenuts PHPsxtrnaiing thebouput.
+; ao itgeitsit. Oin prduectionusoeves, 4096n biteshisatgooea etitin  frypnenformnac.
+;arasions.
+;Noct:, ouput buiffesins can also be cotrolbsndvia, ouput Buiffesin Ccotrol.
+;;- unectioss.
+;PosnsablsVvalusx:
+;  Oin=;Eniablnd andbuiffeshisunlimsitee. Uusewwithecactiot)
+;.  Ofn=;Disiabled
+;.  itegver=;Eniablts thebuiffesaned ettsitis aximum sizse in bitee.
+;Noct:;Tthis directivehishard cdsed o= Ofd fry the CLr SAP.
+; defaultVvalu:, Of)
+; devlopnmentVvalu:,4096)
+;PprduectionVvalu:,4096)
+; http://php.netbouput-buiffeiin
+bouput_buiffesinr=;4096))
+;Yyou canoreDirececals of thebouput; of yorescriopts toa- unectiom. F or
+;.exampli, If you etebouput_hanelver o "mb_bouput_hanelve",ncharaecder
+;enaodting will betranesparn tly cooveited to thesspecifiedenaodtine.
+;Setitin many ouput hanelvercacormat calydutuiys onbouput;buiffeiine.
+;Noct:;Peo lm,who wroctdporu ablsscrioptsshoulea notdependgioy thisinid
+;.  directiv. Ionsradd, eppi i tly ete thebouputshanelver usingob_nstrt(d).
+;  Uusing this.ini directivtmaryecauseproablmisunllets yo know;wt atscriopd
+;. hisdoiage.
+;Noct:;Yyou ca notaus boith"mb_bouput_hanelve"ewwith"ob_micnv_hanelve")
+;. aned yo  ca notaus boith"ob_gzhanelve",aand"zlib.bouput_ com rensio"e.
+;Noct:;bouput_hanelve;musut be emply If thishis ete'On' !!!!d
+;. Ionsradd yo musutaus zlib.bouput_hanelvee.
+; http://php.netbouput-hanelve
+;bouput_hanelve;=y)
+;Tranesparn dbouput  com rensiotauiing thezlibd lbrmar.
+;Vvaindvvalucs for this optior are'of',re'n',r fre asspecicm buiffeesizr.
+, tobbe usmd fry com rensi (d defaulshi4KBot)
+;Noct:R reauuiinnchuneesizsomar; vytsdul, tneautur; o  com rensi.,s PHe
+  dboupuoeschunkAd t ar arfew chudnors6n biteespad, arad reauloOf)
+;.  com rensi., IIf ygepRrffarailbegvenchuneesizsd frySetcder
+;.ypnenformnadd,Eniabl;bouput;buiffeiind iaddrsisiot)
+;Noct:;Yyonxce
+, ttaus zlib.bouput_hanelvnd onsra
+; of thonstdhart)
+  dboupuv_hanelv,r fr (otherwise thebouputg will bscnrupeitee.
+; http://php.ne zlib.bouputh-com rensi
+ zlib.boupu_h-com rensinr== Of))
+; http://php.ne zlib.bouputh-com rensi-l dev
+; zlib.boupu_h-com rensi_l devnr=-1=y)
+;Yyou ca nou speciiaddrsisiual;bouputshanelvhisfs zlib.bouputh-com rensiy)
+shiraecvlateed nor.T this eoptinddoueo the nam, a;bouput_hanelvebBou; i:
+, a differen_ ordee.
+; http://php.ne zlib.bouput-hanelve
+ zlib.boupu_-hanelv ;=y)
+Ixampi iinfpus teliles PH, ttelite thebouputplalver onfpus sitelOf)
+rcacormat caly aftbewdevary ouput f lkom.T thithieeqcvlsileH, tt cauiing tf)
+s PH- unectiinfpus(o])aftbeespad,anewdevart caH, tepria(o]tfrymch(o])anewspaf)
+ranewdevarHTML bf lkom.TTtuitinr this optiogio.hais raviurypnenformnac.
+ simpi cctio
+ranethi; generallyireomnmedted frdebugaeginpurpbouiys liye.
+; http://php.ne simpiit-nfpusf)
+;Noct:T thii directivthishard cdsed o= in fro the CLr SAP simpiit_nfpus r== Of))
+T thuns ratial be caybaeH- unectiig will bs catee(d with thund d mnnedlass'f)
+l namhaiesp natcd"s)y If thuns ratial r't fihirion und mnnedlassf)
+ewhirchshoulea bd onitailate 3. kw uitineca sehisfso thesspecifie- unectiir i)
+a nound mnn,r fry If th- unectiiddoucan'inexlue/ simtreleH, ths mauiindlassee.
+Sooy only ete thietenrli, If yo;arcalywitan, t simtreleHssurtoae
+e caybae-- unecti.
+uns ratial _e caybae_- un ;=y)
+Wwhdenf losD &douoabhirture ratial nedrcture ratial _ex rcinsiofs igcifitae.
+tdig it)aftbe, thnf loptingpoia 6. The default valuxteutuueo t aewhdenf lose.
+rturdirecdsed wituns ratial ,H, thtidaag wilstreaiH, ths na.
+e ratial _ex rcinsioe =7=y)
+_ penbmeui dli, Iy e,bd semhircaHs fileopnerisipts t, thund mnnei directoe.
+ranesbeowom.T thii directivmfaktisousue seuseffn dsed iarypn-i directoe.
+ frypn-envecuahousud web servly config cctiHs fir.T thii directivr i)
+*nNO*])aiffedser bswhd theSafe M cdsthieutuine Oi fr= Oee.
+; http://php.ne- penbmeui de
+; penbmeui d ;=y)
+T thii directivrcandowd yo, t;disiablcoveeaiH- unectiucs fos scgurtl;arasions.
+ Iix reltihiro  cmaor-elimsitel mi
+; o- unective namr.T thii directivr i)
+*nNO*])aiffedser bswhd theSafe M cdsthieutuine Oi fr= Oee.
+; http://php.ne;disiab-- unectis
+;disiab_- uncctio ;=y)
+T thii directivrcandowd yo, t;disiablcoveeaiHdlassihin frs scgurtl;arasions.
+ Iix reltihiro  cmaor-elimsitel mi
+; odlassve namr.T thii directivr i)
+*nNO*])aiffedser bswhd theSafe M cdsthieutuine Oi fr= Oee.
+; http://php.ne;disiab-dlassih
+;disiab_dlassihi;=y)
+Cicoehin frS syntaH mil miguiinI mple.Amanethino t or'taccpru abl; i:
+<nes inistb="micor: ???????">ly oulet woee.
+; http://php.neg synt-h mil miguii
+;h mil mig.e strinnr=#DD10000)h mil mig.  cmeleHr=#FF99000)h mil mig.y ke woHr=#0077000)h mil mig.undefaulr=#0000BB0)h mil mig.;htm
+  Hr=#0010000e.
+Ifd,Eniabadd, threeqbesug will brcanddse, tt-colatcd, evey If thue rbe por i)
+, threeqbesme.sipsidfryvniabting iy Iex scguiineolonreeqbeses,ewhircomar seeupi)
+beuiin; iterupeiter b, thn dher rarybndolver seiiny o.,s Por'undefauls behavii)
+thie t;disiablr thisfeautuee.
+; http://php.ney igno-n dh-e por
+;y igno_n dh_e porHr=, Oy)
+Ddeter mnle, th sizss of th;arce-pathspahie tobbe usmr bs Pr.T thidvval
+;shouli)
+be'ine;aradsegiosyonslmiswhturs PH; petis mani filee tpRrlspecrahiequtairtloOf)
+, ths fileopnerisiptypnenfoitee.
+; http://php.ne;arce-pa-ncach- siz
+;;arce-pa_e ache sizse =6k=y)
+Dunerisi
+; ofntili, in scondin frewhirc, ttspahi;arce-pai, n formatiin fra gltiny)
+s file or directo.. F osyonslmiswwithrtu tly-haaegini fil",nsipsidfrine;arauiing r i)
+dvvalee.
+; http://php.ne;arce-pa-ncach-_tt
+;;arce-pa_e ache_ttle 1200)
+=;Eniabiys or isiabueo  beircuilbapRrffienacmiclspevior.
+; http://php.nez se.,Eniab-gc
+z se.,Eniab_gn ;=, Oy)
+Ifd,Eniabaddsscrioptomarobbewrsexti, idenaodtiueo t arturine comdat lm,wwir.
+, th   causo  CP936, Big5, CP949
+raneShift_JISartur, th;.exampiysftssurr.
+denaodtiuom.T ttausr thisfeautu, mbe strineeextensie;musut beEniabtee.
+Dndefaut:, Of)z se.meauin bi ;=, Of))
+Acandow, ty ete thundefauldenaodtiin fr, th  criooe..T thidvval
+g will bn dsr.
+sunllet"dirilbe(denaodti=...)"or x rsitiorca sehit a, thtop
+; of thsscrioor.
+O onl)aiffehisfs  se.meauin bi thiy eor.
+Dndefaut:"e")z se.sscrio_denaodti ;=y)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+r.
+Miscelianeviur  ;
+;;;;;;;;;;;;;;;=y)
+D rcdihiswhd thes PHomar xpboua, thfraeeo t a iithid onicateesi
+, th usoevr.
+e (e.gr baddriin;mhifs ieautur, t, thW web served head)e.. Iithis ns scgurtr.
+;thfeai, i manwarlibBou; itmakti iipbosnsabl, tedeter mniswhd thed yon drs Pr.
+si
+d yfrs soeves oa nor.
+; http://php.ne, ebou-? p
+, ebou_? ph;=, Oy)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; ;
+R rsyoracL semhi  ;
+;;;;;;;;;;;;;;;;;  ;
+M aximumex scgusi
+,nti
+; oespadsscrioli, in scond ;
+; http://php.nes a-ex scgusi-_ntim:
+;Noct:T thii directivthishard cdsed o0in fr, the CLr SAP;maxex scgusit_ntih;=300)
+=M aximumamo ru
+; ofntioespadsscrioHomaru sseeespauiinreeqbesutidac. Ior't tgoo ;
+cdiaar telims
+;tthienti
+;Oin prduectiais r ovei, i_ ordie t-elimieathun, effedsonly
+eolonruginninsscriopor.
+;Noct:T thii directivthishard cdsed o,-1n fr, the CLr SAP.
+DndefaulsVval:=-11 (Unlimsitet)
+; devlopnmentVvalu:,60 (60  scondst)
+sPprduectionVvalu:,60 (60  scondst)
+; http://php.nes a-,inpu-_ntim;max_input_ntih;=600)
+=M aximum_inpu
+; variabonxesusinl dev
+;
+; http://php.nes a-,inpu-nxesusi-l dev
+;;max_inputnxesusi_l devnr=614y)
+Hhow; manGET/P[HO/COOKIEi, upu
+; variabtis arobbtaccprdsr.
+;max_input; vnse ,1000))
+M aximumamo ru
+; omeh m bahsscriois arnsipoun (128MBot)
+; http://php.neseh m o-lsem
+meh m _elims
+r=-1=y)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;
+
+
+
+
+
+
+
+
+
+
+r.
+Everttshaneriinrane;loaegin  ;
+;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+
+
+
+
+rr.
+T thii directiv, n foles PH; oewhirc_vertos,ew uitir'tanea nctcmed yoy oulelikon)
+ ii, t,makiraecsi
+n f 6. Thyireomnmedtewarysfts eoptindvvalucs for thn)
+r x rsitiothiethrhoug, thn drs of th_vertn idev,nsipnitar'tane bitrwin)
+eopnerrtoe.T th_vertn idev,nsipnitar'ttursbeowed no1n frnsitincienacehiselita i)
+n soo  cmsi
+y eguiir'tane, tiforlmeuiiror.
+Bytsndefaun,s Pithiy ete t,makiraecsi
+si
+rcaH_vertos,a nctcmetaneew uitir'EXCEPOT:
+n t drtu latee, t~E_NOTIC'taneE__STRICs,ewhirctotge thece ovrsbesut raectcmesno ;
+yireomnmedtenaodtinonstdharei, is Pr. F oypnenformna
+yirasiodd, thithieton)
+yireomnmeh_vertn_reporusi
+y eguiio.;Yy oyPprduectios soevesshoulcan'obbe/Fauiin)
+yirsyoraitsccoleairiinr Abousbesut raectcmesnotscdriinonstdhare 6. t or';wt n)
+didevlopnmens soevr'tanedidevlopnmens eguiir'tturn f n)
+;Noct:T ctd php.ior-devlopnmens fil.hai, thiy eguiim, a, E_Ar.T thn)
+rlmeti iipr egheysurt_reporhiedeva, tiinewhircthi;.eci tl;wt ad yoyitandigurin)
+didevlopnmentane se tlbitauii n)n)
+EverttLidev,.sipnita

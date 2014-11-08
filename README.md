@@ -50,10 +50,10 @@ Cтурктура каталогов nginx+php-fpm:
 
 Внутренние глобальные переменные: 
 
-$opt=/storage/
+$opt=/__MML_OPT__/
 
 
-- /storage/
+- /__MML_OPT__/
 - ├── socket 				- здесь располагаются сокеты php-fpm
 - └── www	
 -	└── domain.ru		- корневая папка конкретного домена domain.ru
@@ -62,13 +62,13 @@ $opt=/storage/
 -        └── www			- корневая директория domain.ru
 
 Права на каталоги:
-- /storage/						= root:root 2750, u:nginx:x, u:fpmdomainru:x
-- /storage/socket/				= root:root 2750 u:nginx:rwx, u:fpmdomainru:rwx
-- /storage/www/					= root:root 2750, u:nginx:x, u:fpmdomainru:x
-- /storage/www/domain.ru/			= root:root 2750, u:nginx:x, u:fpmdomainru:x, u:user:rx
-- /storage/www/domain.ru/www/		= root:root 2750, u:nginx:rx, u:fpmdomainru:rwx, u:user:rwx
-- /storage/www/domain.ru/log/		= root:root 2750, u:nginx:rwx, u:fpmdomainru:rwx, u:user:rx
-- /storage/www/domain.ru/tmp/		= root:root 2750, u:nginx:rwx, u:fpmdomainru:rwx, u:user:rwx
+- /__MML_OPT__/						= root:root 2750, u:nginx:x, u:fpmdomainru:x
+- /__MML_OPT__/socket/				= root:root 2750 u:nginx:rwx, u:fpmdomainru:rwx
+- /__MML_OPT__/www/					= root:root 2750, u:nginx:x, u:fpmdomainru:x
+- /__MML_OPT__/www/domain.ru/			= root:root 2750, u:nginx:x, u:fpmdomainru:x, u:user:rx
+- /__MML_OPT__/www/domain.ru/www/		= root:root 2750, u:nginx:rx, u:fpmdomainru:rwx, u:user:rwx
+- /__MML_OPT__/www/domain.ru/log/		= root:root 2750, u:nginx:rwx, u:fpmdomainru:rwx, u:user:rx
+- /__MML_OPT__/www/domain.ru/tmp/		= root:root 2750, u:nginx:rwx, u:fpmdomainru:rwx, u:user:rwx
 
 
 

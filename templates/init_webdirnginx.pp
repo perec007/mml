@@ -49,9 +49,9 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 
 	
 	$wwwdirs = [
-	'/storage',
-	'/storage/socket',
-	'/storage/www',
+	'/__MML_OPT__',
+	'/__MML_OPT__/socket',
+	'/__MML_OPT__/www',
 	]
  
 	file { $wwwdirs :
@@ -63,7 +63,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 # Приводим в порядок 		#
 # Контент домена по умолчанию#
 ###########################
-	exec { '/root/scripts/managedomain.sh  adddom default' :
+	exec { '/__MML_WORK__/scripts/managedomain.sh  adddom default' :
 		require	=> [
 			User[NGINX], 
 			File[$wwwdirs],
@@ -79,12 +79,12 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	}
 	
  	file { 'Content default web site' :
-		path	=> 	'/storage/www/default/www',
-		source  => 	'/home/os/mml/puppet/nginx/index',
+		path	=> 	'/__MML_OPT__/www/default/www',
+		source  => 	'__MML_WORK__puppet/nginx/index',
 		ensure 	=> 	directory,
 		recurse 	=>	'true',
 		owner		=> NGINX,
-		require 	=> Exec["/root/scripts/managedomain.sh  adddom default"],
+		require 	=> Exec["/__MML_WORK__/scripts/managedomain.sh  adddom default"],
 	}
 	
 ##########################
@@ -109,7 +109,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 # ###################################
 # # Раздаем необходимые права через ACL#
 # ###################################
-	acl::setacl { '/storage' :
+	acl::setacl { '/__MML_OPT__' :
 		type	=> "user",
 		user 	=> "NGINX",
 		perm 	=> "--x", 
@@ -121,7 +121,7 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	}	
 	
 	acl::setacl { 'default mask www' : 
-		dir		=> '/storage/www',
+		dir		=> '/__MML_OPT__/www',
 		type	=> "mask",
 		user 	=> "",
 		perm 	=> "rwx", 
@@ -129,12 +129,12 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 		recursion	=> true,
 		require	=> [
 			File[$wwwdirs],
-			Exec['/root/scripts/managedomain.sh  adddom default'],
+			Exec['/__MML_WORK__/scripts/managedomain.sh  adddom default'],
 			]
 	}
 
 	acl::setacl { 'Mask socket folder' : 
-		dir		=> '/storage/socket/',
+		dir		=> '/__MML_OPT__/socket/',
 		type	=> "mask",
 		user 	=> "",
 		perm 	=> "rwx", 
@@ -144,15 +144,15 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	}
 	
 	acl::setacl { 'Nginx to socket folder' : 
-		dir		=> '/storage/socket/',
+		dir		=> '/__MML_OPT__/socket/',
 		type	=> "user",
 		user 	=> "NGINX",
 		perm 	=> "rwx", 
 		setdefault => true,
 		require	=> [
 			File[$wwwdirs],
-			Acl::Setacl['/storage'],
-			Exec['/root/scripts/managedomain.sh  adddom default'],
+			Acl::Setacl['/__MML_OPT__'],
+			Exec['/__MML_WORK__/scripts/managedomain.sh  adddom default'],
 			]	
 		}
 
@@ -160,21 +160,21 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 	# # Включаем необходимые конифигурационные файлы#
 	# ############################################
 	file { '/etc/nginx/nginx.conf' :
-		source  => '/home/os/mml/puppet/nginx/nginx.conf',
+		source  => '__MML_WORK__puppet/nginx/nginx.conf',
 		replace =>      true,
 		notify  =>      Service["nginx"],
 		owner => NGINX,
     }
 	
 	file { '/etc/nginx/geoip.dat' :
-		source  => '/home/os/mml/puppet/nginx/geoip.dat',
+		source  => '__MML_WORK__puppet/nginx/geoip.dat',
 		replace =>      true,
 		notify  =>      Service["nginx"],
 		owner => NGINX,
     }	
 	
 	file { '/etc/nginx/sites-available/template' :
-		source  => '/home/os/mml/puppet/nginx/template',
+		source  => '__MML_WORK__puppet/nginx/template',
 		replace =>      true,
 		notify  =>      Service["nginx"],
 		owner 	=> NGINX,

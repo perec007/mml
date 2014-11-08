@@ -39,13 +39,13 @@ domain=$2
 	cd /etc/nginx/sites-available/
 	cp template $domain.conf
 	ln -s /etc/nginx/sites-available/$domain.conf /etc/nginx/sites-enabled/$domain.conf 
-	sed -i  "s/DOMAIN/$domain/g" $domain.conf
-	sed -i  "s/FPMUSER/fpm.$domain/g" $domain.conf
+	sed -i  "s/__WWWDOM__/$domain/g" $domain.conf
+	sed -i  "s/__FPMUSER__/fpm.$domain/g" $domain.conf
 
 	cd /etc/php5/fpm/pool.d/
 	cp TEMPLATE $domain.conf
-	sed -i  "s/DOMAIN/$domain/g" $domain.conf
-	sed -i  "s/FPMUSER/fpm.$domain/g" $domain.conf
+	sed -i  "s/__WWWDOM__/$domain/g" $domain.conf
+	sed -i  "s/__FPMUSER__/fpm.$domain/g" $domain.conf
 	echo "CREATE $domain <br> $(date)" >> $mml_opt/www/$domain/www/index.php
 
 
