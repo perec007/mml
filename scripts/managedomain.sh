@@ -79,12 +79,11 @@ deldom)
 
 useradd)
 	user=$2
-	grep $user: /etc/passwd > /dev/null  && echo User $user is exisis! EXIT!!! && exit 
-
-	useradd -s /bin/bash -m $user
-	echo "Use password to new username: passwd $user"
-	apg -n 3
-	passwd $user
+	shell=$3
+	password=$4
+	grep $user: /etc/passwd > /dev/null  && echo User $user is exisis! EXIT!!! && exit 1
+ 	useradd -u $user -s $shell -p $(echo $password | openssl passwd -1 -stdin)
+	
 ;;
 
 useraddperm)
@@ -128,7 +127,7 @@ cat <<EOF
 adddom|Добавление домена|Добавление http домена, создание php-fpm пользователя, и типового конфига для nginx и отдельного пула php-fpm| --inputbox Domainname: 15 51 |x1 
 deldom|Удаление домена|Удаление http домена. Удаляются конфиги виртуального хоста, php-fpm user и конфиг, и вся структура каталога.| --inputbox Domainname: 15 51 |x1
 showdom|список доменных имен на сервере|Отобразить список доменных имен на сервере
-useradd|Добавление пользователя|Добавление пользователя в систему| --inputbox Username: 15 51  --inputbox Shell: 15 51  --passwordbox Password: 15 51 |-s x2 -p x3 x1
+useradd|Добавление пользователя|Добавление пользователя в систему| --inputbox Username: 15 51  --inputbox Shell: 15 51  --passwordbox Password: 15 51 | x1 x2 x3
 userdel|Удаление пользователя|Удаление пользователя со всеми файлами|--inputbox Username: 15 51 |x1
 useraddperm|Права на домен|Дать пользователю возможность редактировать файлы и просматривать логи определенного домена. В его каталоге для удобства создается симлинк на рабочий каталог| --inputbox Domainname: 15 51 |x1
 userdelperm|Забрать права на домен|Забрать права редактирования и просмотра логов домена|--inputbox Domainname: 15 51 |x1
@@ -143,7 +142,7 @@ $0 {adddom|deldom|showdom} "httpdomain"
 Создание домена происходит вместе с созданием всей структуры папок, и раздачей необходимых прав nginx и fpm серверу.
 Удаление ведет к удалению структуры каталогов, конфигов.
 
-$0 {useradd|userdel}   "user"
+$0 {useradd|userdel}   "user" "shell" "pass"
 Добавление и удаление пользователя в системе. 
 При добавлении пользователя система генерирует 3 случайных пароля и предлагается выбрать один из них.
 При удалении не удаляется домашний каталог пользователя! 
