@@ -25,6 +25,7 @@ echo  $all_userscript | tr ' ' \\n | \
 	awk  'BEGIN { print "$DIALOG --clear --title \"CASE\" --menu \"Выберите скрипт:\" 30 61 10  " } { print  "\""NR"\" \"" $1"\"  " } END { print "2> $tempfile" } ' | \
 	tr \\n ' '  | bash
 
+[ $? -eq 0 ] || exit 1
 
 id_script=$(echo $all_userscript | cut -d ' ' -f $(cat $(echo $tempfile))) 
 
@@ -55,7 +56,7 @@ $id_script dialog | \
 pre_param=$( cat $tempfile )
 
 # Если количество слов в 4м поле больше 0 предлагаем заполнить дополнительные поля.
-add_dialog_param=$($id_script dialog | grep $pre_param | cut -d '|' -f 4 |wc -w)
+add_dialog_param=$( $id_script dialog | grep $pre_param | cut -d '|' -f 4 |wc -w )
 
 
 if [ $add_dialog_param -ne 0 ]

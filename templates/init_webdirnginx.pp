@@ -92,8 +92,6 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
 ##########################
 		user { NGINX:
                 ensure            =>  present,
-                uid               =>  1000,
-                gid               =>  1000,
                 shell             =>  "/bin/false",
                 home              =>  "/dev/null",
                 comment           =>  "NGINX USER",
@@ -102,7 +100,6 @@ define  acl::setacl ($perm='---',$type='user',$user,$setdefault='false',$dir='',
         }
 
         group { NGINX:
-                gid               => 1000,
         }
 		
 		

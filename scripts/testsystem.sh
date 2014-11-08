@@ -19,14 +19,17 @@ check_debian() {
 	fi
 }
 
-
-
-if [ -f /etc/debian_version ]
+if [ "$(whoami)" != "root" ]
+then 
+	echo Need root privileges.
+	exit 1
+elif [ -f /etc/debian_version ]
 then 
 	check_debian
 elif [ -f /etc/centos-release ]
 then 
 	check_centos
+	# в разработке
 else 
 	echo "OS не поддерживается!"
 fi
