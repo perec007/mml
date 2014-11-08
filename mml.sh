@@ -41,7 +41,7 @@ fi
 
 
 
-#Выбор действия в модуле
+# Выбор действия в модуле
 $id_script dialog | \
 	awk -F '|' 'BEGIN { print "$DIALOG --clear --title \"CASE\" --menu \"Выберите требуемое действие:\" 30 61 10  " } { print  "\""$1"\" \"" $2"\"  " } END { print "2> $tempfile" } ' | \
 	tr \\n ' '  | bash
@@ -49,7 +49,7 @@ $id_script dialog | \
 [ $? -eq 0 ] || exit 1
 
 	
-#Выбор дополнительных параметров для действия
+# Выбор дополнительных параметров для действия
 pre_param=$( cat $tempfile )
 
 # Если количество слов в 4м поле больше 0 предлагаем заполнить дополнительные поля.
@@ -58,8 +58,14 @@ add_dialog_param=$( $id_script dialog | grep $pre_param | cut -d '|' -f 4 |wc -w
 
 if [ $add_dialog_param -ne 0 ]
 then
+	long_help="$($id_script dialog | grep $pre_param\| | awk -F '|' '{ print $3}' )"
+	# показываем справку
 	$id_script dialog | grep $pre_param\| | \
-	awk -F '|' 'BEGIN { print "$DIALOG --clear --title \"Дополнительные параметры запуска команды:\" " } { print $4 } END { print " 2> $tempfile " }' | \
+		awk  -F '|' '{ print "dialog --clear --title \" Ознакомьтесо со справочной информацией о дальнейших действиях модуля \" --msgbox \"" $3 "\" 30 61 " }  END { print " 2> $tempfile " }' | \
+	tr \\n ' '  | bash
+
+	$id_script dialog | grep $pre_param\| | \
+	awk  -F '|' 'BEGIN { print "$DIALOG --clear --title \" Дополнительный параметр: \" " } { print $4 } END { print " 2> $tempfile " }' | \
 	tr \\n ' '  | bash
 	sed -i "s/\t/|/g" $tempfile
 
