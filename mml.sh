@@ -59,13 +59,13 @@ add_dialog_param=$( $id_script dialog | grep $pre_param | cut -d '|' -f 4 |wc -w
 if [ $add_dialog_param -ne 0 ]
 then
 	long_help="$($id_script dialog | grep $pre_param\| | awk -F '|' '{ print $3}' )"
-	# показываем справку
-	$id_script dialog | grep $pre_param\| | \
-		awk  -F '|' '{ print "dialog --clear --title \" Ознакомьтесо со справочной информацией о дальнейших действиях модуля \" --msgbox \"" $3 "\" 30 61 " }  END { print " 2> $tempfile " }' | \
-	tr \\n ' '  | bash
+#	# показываем справку
+#	$id_script dialog | grep $pre_param\| | \
+#		awk  -F '|' '{ print "dialog --clear --title \" Ознакомьтесо со справочной информацией о дальнейших действиях модуля \" --msgbox \"" $3 "\" 30 61 " }  END { print " 2> $tempfile " }' | \
+#	tr \\n ' '  | bash
 
 	$id_script dialog | grep $pre_param\| | \
-	awk  -F '|' 'BEGIN { print "$DIALOG --clear --title \" Дополнительный параметр: \" " } { print $4 } END { print " 2> $tempfile " }' | \
+	awk  -v long_help="$long_help" -F '|' 'BEGIN { print "$DIALOG --clear  --backtitle \"help: " long_help " \"   --title \" Дополнительный параметр: \" " } { print $4 } END { print " 2> $tempfile " }' | \
 	tr \\n ' '  | bash
 	sed -i "s/\t/|/g" $tempfile
 
